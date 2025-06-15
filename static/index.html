@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weibo Favorites</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .favorite {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Weibo Favorites</h1>
+    <div id="favorites-container"></div>
+
+    <script>
+        async function fetchAllFavorites() {
+            let allFavorites = [];
+            let page = 1;
+            let hasMore = true;
+
+            while (hasMore) {
+                try {
+                    const response = await fetch(`favorites/favorites_page_${page}.json`);
+                    if (response.status === 404) {
+                        // No more pages available
+                        hasMore = false;
+                        break;
+                    }
+                    const jsonData = await response.json();
+
+                    if (jsonData.ok === 1 && jsonData.data && jsonData.data.status) {
+                        const favorites = jsonData.data.status;
+                        allFavorites = allFavorites.concat(favorites);
+
+                        // Continue to the next page
+                        page++;
+                    } else {
+                        console.error('Invalid data structure');
+                        hasMore = false;
+                    }
+                } catch (error) {
+                    console.error('Failed to load data:', error);
+                    hasMore = false;
+                }
+            }
+
+            return allFavorites;
+        }
+
+        async function loadFavorites() {
+            try {
+                const favorites = await fetchAllFavorites();
+                const container = document.getElementById('favorites-container');
+                const fragment = document.createDocumentFragment();
+
+                favorites.forEach(fav => {
+                    const div = document.createElement('div');
+                    div.className = 'favorite';
+                    div.innerHTML = fav.text; // Allow HTML tags
+                    fragment.appendChild(div);
+                });
+
+                container.appendChild(fragment);
+            } catch (error) {
+                console.error('Failed to load all favorites:', error);
+            }
+        }
+
+        loadFavorites();
+    </script>
+</body>
+</html>
