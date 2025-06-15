@@ -8,3 +8,7 @@ get favorites according to total number.
 save item in ./favorites/favorites_page_{n}.json
 # display
 # management
+
+# todo
+data management
+data update

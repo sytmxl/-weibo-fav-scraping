@@ -21,6 +21,10 @@
     <h1>Weibo Favorites</h1>
     <div id="favorites-container"></div>
 
+    <div style="text-align: center; margin-top: 20px; font-size: 18px; color: #333;">
+        <p>This page is deployed on Cloudflare Pages.</p>
+    </div>
+
     <script>
         async function fetchAllFavorites() {
             let allFavorites = [];
@@ -29,7 +33,7 @@
 
             while (hasMore) {
                 try {
-                    const response = await fetch(`favorites/favorites_page_${page}.json`);
+                    const response = await fetch(`/favorites/favorites_page_${page}.json`);
                     if (response.status === 404) {
                         // No more pages available
                         hasMore = false;
